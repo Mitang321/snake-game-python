@@ -2,27 +2,44 @@ import pygame
 import sys
 import random
 
+
 pygame.init()
+
 
 width, height = 600, 400
 window = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Snake Game')
+
 
 black = (0, 0, 0)
 white = (255, 255, 255)
 green = (0, 255, 0)
 red = (255, 0, 0)
 
+
 snake_pos = [100, 50]
 snake_body = [[100, 50], [90, 50], [80, 50]]
 snake_direction = 'RIGHT'
 change_to = snake_direction
 
+
 food_pos = [random.randrange(1, (width//10)) * 10,
             random.randrange(1, (height//10)) * 10]
 food_spawn = True
 
+
+score = 0
+
+
 clock = pygame.time.Clock()
+
+
+def show_score(color, font, size):
+    score_font = pygame.font.SysFont(font, size)
+    score_surface = score_font.render('Score : ' + str(score), True, color)
+    score_rect = score_surface.get_rect()
+    score_rect.midtop = (width / 2, 15)
+    window.blit(score_surface, score_rect)
 
 
 def game_loop():
@@ -30,6 +47,7 @@ def game_loop():
     global snake_direction
     global food_pos
     global food_spawn
+    global score
 
     while True:
         for event in pygame.event.get():
@@ -67,6 +85,7 @@ def game_loop():
         snake_body.insert(0, list(snake_pos))
         if snake_pos == food_pos:
             food_spawn = False
+            score += 10
         else:
             snake_body.pop()
 
@@ -92,6 +111,8 @@ def game_loop():
         if snake_pos[0] < 0 or snake_pos[0] > width-10 or snake_pos[1] < 0 or snake_pos[1] > height-10:
             pygame.quit()
             sys.exit()
+
+        show_score(white, 'times new roman', 20)
 
         pygame.display.update()
 
