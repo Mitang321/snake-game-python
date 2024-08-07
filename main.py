@@ -34,15 +34,35 @@ def show_score(color, font, size):
     window.blit(score_surface, score_rect)
 
 
+def display_message(message, size, color, y_offset):
+    font = pygame.font.SysFont('times new roman', size)
+    message_surface = font.render(message, True, color)
+    message_rect = message_surface.get_rect()
+    message_rect.midtop = (width / 2, height / 2 + y_offset)
+    window.blit(message_surface, message_rect)
+
+
+def welcome_screen():
+    window.fill(black)
+    display_message('Welcome to Snake Game!', 50, white, -50)
+    display_message('Press ENTER to Start', 30, white, 50)
+    pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    return
+
+
 def game_over():
     game_over_sound.play()
-    my_font = pygame.font.SysFont('times new roman', 50)
-    game_over_surface = my_font.render(
-        'Your Score is : ' + str(score), True, red)
-    game_over_rect = game_over_surface.get_rect()
-    game_over_rect.midtop = (width / 2, height / 4)
     window.fill(black)
-    window.blit(game_over_surface, game_over_rect)
+    display_message('Your Score is : ' + str(score), 50, red, -50)
+    display_message('Press ENTER to Restart', 30, white, 50)
     pygame.display.flip()
     pygame.time.sleep(2)
     wait_for_key()
@@ -55,16 +75,14 @@ def wait_for_key():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                main()
+                if event.key == pygame.K_RETURN:
+                    main()
 
 
 def pause_game():
     paused = True
-    my_font = pygame.font.SysFont('times new roman', 50)
-    pause_surface = my_font.render('Paused', True, red)
-    pause_rect = pause_surface.get_rect()
-    pause_rect.midtop = (width / 2, height / 4)
-    window.blit(pause_surface, pause_rect)
+    window.fill(black)
+    display_message('Paused', 50, red, 0)
     pygame.display.flip()
 
     while paused:
@@ -164,4 +182,5 @@ def main():
 
 
 if __name__ == '__main__':
+    welcome_screen()
     main()
