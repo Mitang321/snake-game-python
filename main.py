@@ -1,3 +1,5 @@
+
+
 import pygame
 import sys
 import random
@@ -40,6 +42,20 @@ def show_score(color, font, size):
     score_rect = score_surface.get_rect()
     score_rect.midtop = (width / 2, 15)
     window.blit(score_surface, score_rect)
+
+
+def game_over():
+    my_font = pygame.font.SysFont('times new roman', 50)
+    game_over_surface = my_font.render(
+        'Your Score is : ' + str(score), True, red)
+    game_over_rect = game_over_surface.get_rect()
+    game_over_rect.midtop = (width / 2, height / 4)
+    window.fill(black)
+    window.blit(game_over_surface, game_over_rect)
+    pygame.display.flip()
+    pygame.time.sleep(2)
+    pygame.quit()
+    sys.exit()
 
 
 def game_loop():
@@ -105,12 +121,10 @@ def game_loop():
 
         for block in snake_body[1:]:
             if snake_pos == block:
-                pygame.quit()
-                sys.exit()
+                game_over()
 
         if snake_pos[0] < 0 or snake_pos[0] > width-10 or snake_pos[1] < 0 or snake_pos[1] > height-10:
-            pygame.quit()
-            sys.exit()
+            game_over()
 
         show_score(white, 'times new roman', 20)
 
