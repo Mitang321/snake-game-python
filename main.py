@@ -19,6 +19,10 @@ green = (0, 255, 0)
 red = (255, 0, 0)
 
 
+eat_sound = pygame.mixer.Sound('eat_sound.wav')
+game_over_sound = pygame.mixer.Sound('game_over_sound.wav')
+
+
 clock = pygame.time.Clock()
 
 
@@ -31,6 +35,7 @@ def show_score(color, font, size):
 
 
 def game_over():
+    game_over_sound.play()
     my_font = pygame.font.SysFont('times new roman', 50)
     game_over_surface = my_font.render(
         'Your Score is : ' + str(score), True, red)
@@ -114,4 +119,49 @@ def main():
             snake_direction = 'RIGHT'
 
         if snake_direction == 'UP':
-            snake_pos[1]
+            snake_pos[1] -= 10
+        if snake_direction == 'DOWN':
+            snake_pos[1] += 10
+        if snake_direction == 'LEFT':
+            snake_pos[0] -= 10
+        if snake_direction == 'RIGHT':
+            snake_pos[0] += 10
+
+        snake_body.insert(0, list(snake_pos))
+        if snake_pos == food_pos:
+            food_spawn = False
+            score += 10
+            eat_sound.play()  # Play sound effect for eating food
+        else:
+            snake_body.pop()
+
+        if not food_spawn:
+            food_pos = [random.randrange(
+                1, (width//10)) * 10, random.randrange(1, (height//10)) * 10]
+        food_spawn = True
+
+        window.fill(black)
+
+        for pos in snake_body:
+            pygame.draw.rect(window, green, pygame.Rect(
+                pos[0], pos[1], 10, 10))
+
+        pygame.draw.rect(window, red, pygame.Rect(
+            food_pos[0], food_pos[1], 10, 10))
+
+        for block in snake_body[1:]:
+            if snake_pos == block:
+                game_over()
+
+        if snake_pos[0] < 0 or snake_pos[0] > width-10 or snake_pos[1] < 0 or snake_pos[1] > height-10:
+            game_over()
+
+        show_score(white, 'times new roman', 20)
+
+        pygame.display.update()
+
+        clock.tick(30)
+
+
+if __name__ == '__main__':
+    main()
